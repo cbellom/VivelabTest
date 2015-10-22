@@ -16,7 +16,7 @@ var VivelabShop={
   decreaseQuality: function(item){
     if(item.quality > 0){
       item.quality --;
-      if(item.sell_in <= 0)
+      if(item.sell_in <= 0 && item.quality > 0)
         item.quality --;
     }
   },
