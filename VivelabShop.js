@@ -14,8 +14,11 @@ var VivelabShop={
     this.items.push(new Item(type, sellIn, quality));
   },
   decreaseQuality: function(item){
-    if(item.quality > 0)
+    if(item.quality > 0){
       item.quality --;
+      if(item.sell_in <= 0)
+        item.quality --;
+    }
   },
   increaseQuality: function(item){
     if(item.quality < 50)
@@ -23,6 +26,22 @@ var VivelabShop={
   },
   decreaseSellIn: function (item) {
     item.sell_in--;
+  },
+  canUpdateQuality: function (item) {
+    return item.name != this.itemsType.sulfuras;
+  },
+  canDecreaseQuality: function (item) {
+    return item.name != this.itemsType.agedBrie && item.name != this.itemsType.backstage ;
+  },
+  updateQualityItem: function (item){
+    if(this.canUpdateQuality(item)){
+      if(this.canDecreaseQuality(item)){
+        this.decreaseQuality(item);
+      }else {
+        this.increaseQuality(item);
+      }
+      this.decreaseSellIn(item);
+    }
   },
   updateQuality: function () {
     var items = this.items;

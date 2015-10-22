@@ -86,4 +86,38 @@ describe("Vivelab", function() {
     expect(item.sell_in).toBe(9);
   });
 
+  it("should update quality for +5 Dexterity Vest item", function(){
+    var item = createItemWith(VivelabShop.itemsType.dexterity, 10, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(9);
+    expect(item.quality).toBe(9);
+  });
+
+  it("should update quality for +5 Dexterity Vest item with a sell in expired", function(){
+    var item = createItemWith(VivelabShop.itemsType.dexterity, 0, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(-1);
+    expect(item.quality).toBe(8);
+  });
+
+  it("should update quality for Aged Brie item", function(){
+    var item = createItemWith(VivelabShop.itemsType.agedBrie, 10, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(9);
+    expect(item.quality).toBe(11);
+  });
+
+  it("shouldnt update quality for sulfuras item", function(){
+    var item = createItemWith(VivelabShop.itemsType.sulfuras, 0, 80);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(0);
+    expect(item.quality).toBe(80);
+  });
+
+  it("should update quality for backstage item with more that 10 days for sell", function(){
+    var item = createItemWith(VivelabShop.itemsType.backstage, 11, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(10);
+    expect(item.quality).toBe(11);
+  });
 });
