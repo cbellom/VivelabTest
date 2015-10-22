@@ -100,6 +100,13 @@ describe("Vivelab", function() {
     expect(item.quality).toBe(8);
   });
 
+  it("should update quality for +5 Dexterity Vest item with a sell in expired and quality equals 1", function(){
+    var item = createItemWith(VivelabShop.itemsType.dexterity, 0, 1);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(-1);
+    expect(item.quality).toBe(0);
+  });
+
   it("should update quality for Aged Brie item", function(){
     var item = createItemWith(VivelabShop.itemsType.agedBrie, 10, 10);
     VivelabShop.updateQualityItem(item);
