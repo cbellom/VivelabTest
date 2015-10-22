@@ -178,4 +178,43 @@ describe("Vivelab", function() {
     expect(VivelabShop.items[4].quality).toBe(11);
     expect(VivelabShop.items[5].quality).toBe(8);
   });
+
+  it("should update all items with expired sell days", function(){
+    VivelabShop.items = [];
+    VivelabShop.addItem(VivelabShop.itemsType.dexterity, 0, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.agedBrie, 0, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.elixir, 0, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.sulfuras, 0, 80);
+    VivelabShop.addItem(VivelabShop.itemsType.backstage, 0, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.conjured, 0, 10);
+
+
+    VivelabShop.updateInventory();
+    expect(VivelabShop.items[0].quality).toBe(8);
+    expect(VivelabShop.items[1].quality).toBe(11);
+    expect(VivelabShop.items[2].quality).toBe(8);
+    expect(VivelabShop.items[3].quality).toBe(80);
+    expect(VivelabShop.items[4].quality).toBe(0);
+    expect(VivelabShop.items[5].quality).toBe(6);
+  });
+
+  it("should update the example inventory", function(){
+    VivelabShop.items = [];
+    VivelabShop.addItem(VivelabShop.itemsType.dexterity, 10, 20);
+    VivelabShop.addItem(VivelabShop.itemsType.agedBrie, 2, 0);
+    VivelabShop.addItem(VivelabShop.itemsType.elixir, 5, 7);
+    VivelabShop.addItem(VivelabShop.itemsType.sulfuras, 0, 80);
+    VivelabShop.addItem(VivelabShop.itemsType.backstage, 15, 20);
+    VivelabShop.addItem(VivelabShop.itemsType.conjured, 3, 6);
+
+
+    VivelabShop.updateInventory();
+    expect(VivelabShop.items[0].quality).toBe(19);
+    expect(VivelabShop.items[1].quality).toBe(1);
+    expect(VivelabShop.items[2].quality).toBe(6);
+    expect(VivelabShop.items[3].quality).toBe(80);
+    expect(VivelabShop.items[4].quality).toBe(21);
+    expect(VivelabShop.items[5].quality).toBe(4);
+  });
+
 });
