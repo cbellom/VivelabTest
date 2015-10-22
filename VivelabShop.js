@@ -27,68 +27,48 @@ var VivelabShop={
   decreaseSellIn: function (item) {
     item.sell_in--;
   },
-  canUpdateQuality: function (item) {
+  canUpdate: function (item) {
     return item.name != this.itemsType.sulfuras;
   },
   canDecreaseQuality: function (item) {
     return item.name != this.itemsType.agedBrie && item.name != this.itemsType.backstage ;
   },
-  updateQualityItem: function (item){
-    if(this.canUpdateQuality(item)){
-      if(this.canDecreaseQuality(item)){
+  shouldDoUpdateForBackstage: function(item){
+    return item.name == this.itemsType.backstage;
+  },
+  shouldDoubleTheDecrease: function(item){
+    return item.name == this.itemsType.conjured;
+  },
+  updateQualityForBackstage: function (item) {
+    this.increaseQuality(item);
+    if (item.sell_in < 11)
+      this.increaseQuality(item);
+    if (item.sell_in < 6)
+      this.increaseQuality(item);
+    if (item.sell_in <= 0)
+      item.quality = 0;
+  },
+  updateQuality: function (item) {
+    if(this.canDecreaseQuality(item)){
+      this.decreaseQuality(item);
+      if(this.shouldDoubleTheDecrease(item))
         this.decreaseQuality(item);
-      }else {
+    }else {
+      if(this.shouldDoUpdateForBackstage(item))
+        this.updateQualityForBackstage(item);
+      else
         this.increaseQuality(item);
-      }
+    }
+  },
+  updateQualityItem: function (item){
+    if(this.canUpdate(item)){
+      this.updateQuality(item);
       this.decreaseSellIn(item);
     }
   },
-  updateQuality: function () {
-    var items = this.items;
-    for (var i = 0; i < items.length; i++) {
-      if (items[i].name != 'Aged Brie' && items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-        if (items[i].quality > 0) {
-          if (items[i].name != 'Sulfuras, Hand of Ragnaros') {
-            items[i].quality = items[i].quality - 1
-          }
-        }
-      } else {
-        if (items[i].quality < 50) {
-          items[i].quality = items[i].quality + 1
-          if (items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
-            if (items[i].sell_in < 11) {
-              if (items[i].quality < 50) {
-                items[i].quality = items[i].quality + 1
-              }
-            }
-            if (items[i].sell_in < 6) {
-              if (items[i].quality < 50) {
-                items[i].quality = items[i].quality + 1
-              }
-            }
-          }
-        }
-      }
-      if (items[i].name != 'Sulfuras, Hand of Ragnaros') {
-        items[i].sell_in = items[i].sell_in - 1;
-      }
-      if (items[i].sell_in < 0) {
-        if (items[i].name != 'Aged Brie') {
-          if (items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-            if (items[i].quality > 0) {
-              if (items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                items[i].quality = items[i].quality - 1
-              }
-            }
-          } else {
-            items[i].quality = items[i].quality - items[i].quality
-          }
-        } else {
-          if (items[i].quality < 50) {
-            items[i].quality = items[i].quality + 1
-          }
-        }
-      }
+  updateInventory: function (){
+    for (var index = 0; index < this.items.length; index++) {
+      this.updateQualityItem(this.items[index]);
     }
   }
 }

@@ -120,4 +120,62 @@ describe("Vivelab", function() {
     expect(item.sell_in).toBe(10);
     expect(item.quality).toBe(11);
   });
+
+  it("should update quality for backstage item with less than 11 days for sell", function(){
+    var item = createItemWith(VivelabShop.itemsType.backstage, 10, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(9);
+    expect(item.quality).toBe(12);
+  });
+
+  it("should update quality for backstage item with less than 6 days for sell", function(){
+    var item = createItemWith(VivelabShop.itemsType.backstage, 5, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(4);
+    expect(item.quality).toBe(13);
+  });
+
+  it("should update quality for backstage item with 0 days or less for sell", function(){
+    var item = createItemWith(VivelabShop.itemsType.backstage, 0, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(-1);
+    expect(item.quality).toBe(0);
+  });
+
+  it("should update quality for Conjured item", function(){
+    var item = createItemWith(VivelabShop.itemsType.conjured, 10, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(9);
+    expect(item.quality).toBe(8);
+  });
+
+  it("should update quality for Conjured item for expired sell day", function(){
+    var item = createItemWith(VivelabShop.itemsType.conjured, 0, 10);
+    VivelabShop.updateQualityItem(item);
+    expect(item.sell_in).toBe(-1);
+    expect(item.quality).toBe(6);
+  });
+
+  it("can update inventory", function(){
+    expect(VivelabShop.updateInventory).toBeDefined();
+  });
+
+  it("should update all items with able sell days", function(){
+    VivelabShop.items = [];
+    VivelabShop.addItem(VivelabShop.itemsType.dexterity, 20, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.agedBrie, 20, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.elixir, 20, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.sulfuras, 0, 80);
+    VivelabShop.addItem(VivelabShop.itemsType.backstage, 20, 10);
+    VivelabShop.addItem(VivelabShop.itemsType.conjured, 20, 10);
+
+
+    VivelabShop.updateInventory();
+    expect(VivelabShop.items[0].quality).toBe(9);
+    expect(VivelabShop.items[1].quality).toBe(11);
+    expect(VivelabShop.items[2].quality).toBe(9);
+    expect(VivelabShop.items[3].quality).toBe(80);
+    expect(VivelabShop.items[4].quality).toBe(11);
+    expect(VivelabShop.items[5].quality).toBe(8);
+  });
 });
